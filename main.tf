@@ -1,9 +1,23 @@
 data "aws_iam_policy_document" "default" {
   count = var.enabled ? 1 : 0
 
+
+
+  statement {
+    actions   = ["s3:GetBucketLocation", "s3:ListAllMyBuckets"]
+    resources = ["arn:aws:s3:::*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = concat(formatlist("%s/*", var.s3_resources) ,var.s3_resources)
+    effect    = "Allow"
+  }
+
   statement {
     actions   = var.s3_actions
-    resources = var.s3_resources
+    resources = concat(formatlist("%s/*", var.s3_resources) ,var.s3_resources)
     effect    = "Allow"
   }
 }
